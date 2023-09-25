@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- FERNANDO ROMERO API frontend SPA ProjectTasca - username: admin - password:admin -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include Bootstrap CSS file -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Include Bootstrap JavaScript files at the end of the document body -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <link rel="icon" type="image/jpg" href="icon.svg" />
+    <title>ITJobs</title>
+
+    <!-- Inline CSS styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
+
+        /* Background style */
+        body {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('backgroundBlack.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        /* Styles for the welcome message */
+        .welcome-text {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 45px;
+            font-weight: bolder;
+            text-align: center;
+            margin-bottom: 90px;
+        }
+
+        /* Custom button style */
+        .btn-custom {
+            background: linear-gradient(to bottom, #94a9c6, #1e3e85);
+            color: #fff;
+            font-weight: bold;
+
+        }
+
+        /* Styles for title and image logo */
+        #custom-title {
+            color: #3161a4;
+            font-size: 35px;
+            font-weight: 900;
+            margin-left: 20px;
+        }
+
+        .logo-img {
+            width: 50px;
+            height: auto;
+            margin-left: 10px;
+        }
+
+        /* Styles for titles */
+        h1 {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: bold;
+        }
+
+        #filterTitle {
+            margin-top: 10%;
+            color: rgb(79, 77, 77);
+        }
+
+        .url-container {
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .details-container {
+            display: none;
+        }
+
+        .page-link {
+            color: #3161a4;
+        }
+
+        .page-item.active .page-link {
+            background: linear-gradient(to bottom, #6b86ab, #1e3e85);
+            color: white;
+        }
+
+        .backButton,
+        .nextButton {
+            color: #3161a4;
+        }
+
+        .btn-customReset {
+            background: linear-gradient(to bottom, #6b86ab, #1e3e85);
+            color: white;
+        }
+
+        #jobList {
+            cursor: pointer !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="login" style="display:none;">
+        <!-- Bootstrap Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="icon.svg" alt="Logo de ITJobs" class="logo-img">
+                <span id="custom-title" class="font-italic">ITJobs</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                </ul>
+            </div>
+        </nav>
+
+        <main class="container mt-5">
+            <!-- Welcome message -->
+            <h1 class="welcome-text">
+                Discover the latest IT jobs and apply today!
+            </h1>
+
+            <div ng-app="loginValidation" ng-controller="loginController">
+
+                <section class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <!-- AngularJS Login Form -->
+                        <form name="loginForm" ng-submit="submitLoginForm()" novalidate>
+                            <div class="form-group"
+                                ng-class="{'is-valid': loginForm.username.$valid && !loginForm.username.$pristine, 'is-invalid': loginForm.username.$invalid && !loginForm.username.$pristine}">
+                                <label for="username">Username:</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                    ng-model="user.username" ng-pattern="/^[a-zA-Z0-9]{1,15}$/" ng-minlength="1"
+                                    ng-maxlength="15"
+                                    ng-class="{'is-valid': loginForm.username.$valid && loginForm.username.$dirty, 'is-invalid': loginForm.username.$invalid && loginForm.username.$dirty}"
+                                    placeholder="Plese, enter your username">
+                                <!-- Error messages for username -->
+                                <div class="invalid-feedback">
+                                    <span ng-show="loginForm.username.$invalid && !loginForm.username.$pristine"
+                                        class="help-block">
+                                        Username is invalid.
+                                    </span>
+                                    <span ng-show="loginForm.username.$error.maxlength && !loginForm.username.$pristine"
+                                        class="help-block">
+                                        It is too long.
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    ng-model="user.password" placeholder="username:admin - password:admin" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom btn-block"
+                                ng-disabled="loginForm.username.$invalid">Log In</button>
+                        </form>
+                        <p class="text-center mt-3">Don't have an account? <a href="#">Sign Up</a></p>
+                    </div>
+                </section>
+
+        </main>
+    </div>
+
+    <div id="home" style="display:none;">
+        <!-- Bootstrap Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <!-- Logo and title -->
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="icon.svg" alt="Logo de ITJobs" class="logo-img">
+                <span id="custom-title" class="font-italic">ITJobs</span>
+            </a>
+            </a> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Navigation links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Search Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Post Job</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#/login">Login out</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Filtering Tools Section (vertical) -->
+        <div class="container mt-5">
+            <div class="row align-items-start">
+                <div class="col-md-3 bg-light rounded-lg">
+                    <!-- Form for job filtering -->
+                    <form id="jobFilterForm">
+                        <!-- Key words Filter -->
+                        <div class="form-group">
+                            <h5 class="font-weight-bold mb-4" id="filterTitle">Search:</h5>
+                            <input type="text" class="form-control form-control-sm" id="searchKeyword"
+                                name="searchKeyword">
+                        </div>
+                        <button type="submit" class="btn btn-customReset btn-block mb-3">Reset</button>
+                    </form>
+                </div>
+
+                <!-- Column for job cards -->
+                <div class="col-md-9">
+                    <div class="row" id="jobList">
+                        <!-- Job cards will be pained here -->
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="container mt-3 justify-content-center" id="pagination">
+                        <nav aria-label="page-navigation">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item"><a class="backButton" href="#">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="nextButton" href="#">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Variables
+        let currentPage = 1;
+        const itemsPerPage = 10; // Number of job offers per page
+        let jobOffers = []; // Stores all job offers
+        let apiUrl = "https://devitjobs.us/api/jobsLight";
+
+        // Object that maps original property names to desired display names
+        const propertyNames = {
+            company: "Company",
+            name: "Offer",
+            jobType: " Job type",
+            expLevel: "Experience Level",
+            annualSalaryFrom: "Salary from ($)",
+            annualSalaryTo: "Salary to ($)",
+            technologies: "Technologies",
+            language: "Language",
+            address: "Address",
+            actualCity: "City",
+            stateCategory: "State",
+            postalCode: "PostCode",
+            companyType: "Sector",
+            companySize: "Company size",
+            activeFrom: "Date of offer",
+            candidateContactWay: "Contact way",
+            redirectJobUrl: "URL",
+        };
+
+        // -------------   LOAD JOB OFFER DETAILS MODULE -----------------
+        // Construct the API URL using the jobId
+        // Function to load the info of ecah ofer to the cards according te AJAX request and JSON response
+        function loadJobDetails(jobId, card) {
+            // Construct the API URL using the jobId
+            const apiUrlWithId = `${apiUrl}/${jobId}`;
+
+            // Make a fetch request to the API
+            // Check if the response is OK (status code 200)
+            // Parse the response as JSON
+            fetch(apiUrlWithId)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((jobDetails) => {
+                    console.log(jobDetails);
+
+                    // Find the details container of the current job offer
+                    // Clear the container before adding new details
+                    // Create elements to display job offer details
+                    const detailsContainer = card.querySelector(".details-container");
+                    detailsContainer.classList.add("details-container", "d-none");
+                    detailsContainer.innerHTML = "";
+                    const detailsList = document.createElement("ul");
+                    detailsList.classList.add("list-group");
+
+                    // Loop through all properties of jobDetails and add each one as a list item
+                    for (const key in jobDetails) {
+                        if (jobDetails.hasOwnProperty(key)) {
+                            const detail = `${key}: ${jobDetails[key]}`;
+                            const listItem = document.createElement("li");
+                            listItem.classList.add("list-group-item");
+                            listItem.textContent = detail;
+                            detailsList.appendChild(listItem);
+                        }
+                    }
+                    // Add the details list to the container
+                    detailsContainer.appendChild(detailsList);
+                })
+                .catch((error) => {
+                    console.error(`Error loading job details: ${error}`);
+                });
+        }
+
+        // -------------   CREATION JOB OFFER CARDS MODULE -----------------
+        // Function to create a job card
+        function createJobCard(offer) {
+            const col = document.createElement("div");
+            col.classList.add("col-12", "mb-3");
+
+            // Create a card div element with Bootstrap styles
+            const card = document.createElement("div");
+            card.classList.add("bg-light");
+            card.classList.add("rounded-lg");
+
+            const cardBody = document.createElement("div");
+            cardBody.classList.add("card-body");
+
+            // Create a heading for the job title
+            const jobTitle = document.createElement("h5");
+            jobTitle.classList.add("card-title");
+            jobTitle.textContent = `${offer.name}`;
+            cardBody.appendChild(jobTitle);
+
+            // Create a p element to display resume of the offer with format
+            const jobInfo = document.createElement("p");
+            jobInfo.classList.add("card-text", "small");
+            jobInfo.innerHTML = `<span class="font-weight-bold">Company:</span> <span class="text-muted">${offer.company}</span> &nbsp;&nbsp;|&nbsp;&nbsp; <span class="font-weight-bold">City/State:</span> <span class="text-muted">${offer.cityCategory}, ${offer.stateCategory}</span> &nbsp;&nbsp;|&nbsp;&nbsp; <span class="font-weight-bold">Job Type:</span> <span class="text-muted">${offer.jobType}</span> &nbsp;&nbsp;|&nbsp;&nbsp; <span class="font-weight-bold">Experience Level:</span> <span class="text-muted">${offer.expLevel}</span>`;
+            cardBody.appendChild(jobInfo);
+
+            // Create a container for job details
+            const detailsContainer = document.createElement("div");
+            detailsContainer.classList.add("details-container");
+
+            // Create an image element for the company logo with styling
+            const logoImage = document.createElement("img");
+            logoImage.classList.add("img-fluid", "mb-2", "rounded");
+            logoImage.style.width = "10%";
+            logoImage.src = offer.logoImg;
+            detailsContainer.appendChild(logoImage);
+
+            // Display specific properties with the desired style
+            const propertiesToShow = [
+                "company",
+                "name",
+                "jobType",
+                "expLevel",
+                "annualSalaryFrom",
+                "annualSalaryTo",
+                "technologies",
+                "language",
+                "address",
+                "actualCity",
+                "stateCategory",
+                "postalCode",
+                "companyType",
+                "companySize",
+                "activeFrom",
+                "candidateContactWay",
+                "redirectJobUrl",
+            ];
+
+            // Iterate through the properties to display
+            for (const key of propertiesToShow) {
+                if (offer[key]) {
+                    // Get the desired display name from the mapping object
+                    const propertyName = propertyNames[key] || key;
+
+                    let detailValue = offer[key];
+
+                    // If it's the "redirectJobUrl" property, wrap it in a styled div
+                    if (key === "redirectJobUrl") {
+                        detailValue = `
+        <div class="url-container">
+            <a href="${offer[key]}" target="_blank" rel="noopener noreferrer">${offer[key]}</a>
+        </div>
+    `;
+                    }
+
+                    const detail = `<strong class="font-weight-bold text-secondary">${propertyName}:</strong> <span class="text-muted">${detailValue}</span>`;
+                    const detailItem = document.createElement("p");
+                    detailItem.classList.add("mb-2");
+                    detailItem.innerHTML = detail;
+                    detailsContainer.appendChild(detailItem);
+                }
+            }
+            cardBody.appendChild(detailsContainer);
+
+            // Add a click event to load details when the card is clicked
+            card.addEventListener("click", function () {
+                loadJobDetails(offer._id, card); // Pass the offer's "_id" and the card element as identifiers
+            });
+
+            // Add a click event to load details when the card is clicked
+            card.addEventListener("click", function () {
+                // Encuentra el contenedor de detalles de la oferta actual
+                const detailsContainer = card.querySelector(".details-container");
+
+                // Obtén el estado actual de display
+                const currentDisplay = window.getComputedStyle(detailsContainer).display;
+
+                // Cambia la clase CSS para mostrar u ocultar los detalles
+                if (currentDisplay === "none" || currentDisplay === "") {
+                    detailsContainer.style.display = "block"; // Mostrar detalles
+                    detailsButton.textContent = "Hide"; // Cambiar el texto del botón a "Hide"
+                } else {
+                    detailsContainer.style.display = "none"; // Ocultar detalles
+                    detailsButton.textContent = "Details"; // Cambiar el texto del botón a "Details"
+                }
+            });
+
+            const detailsContan = document.createElement("div");
+            detailsContainer.classList.add(
+                "details-container",
+                "small",
+                "p-3",
+                "bg-white",
+                "rounded"
+            );
+
+            card.appendChild(cardBody);
+            col.appendChild(card);
+
+            return col;
+        }
+
+        // -------------   LOAD JOB OFFER FOR EACH PAGE MODULE -----------------
+        // Function to load and display job offers for a specific page
+        // Iterate through the offers for the current page
+        function loadJobOffersForPage(page) {
+            const jobList = document.getElementById("jobList");
+            jobList.innerHTML = "";
+
+            const start = (page - 1) * itemsPerPage; // Calculate the start index for the current page
+            const end = start + itemsPerPage; // Calculate the end index for the current page
+            const currentPageOffers = jobOffers.slice(start, end); // Get the offers for the current page
+
+            currentPageOffers.forEach((offer) => {
+                const jobCard = createJobCard(offer);
+                jobList.appendChild(jobCard);
+            });
+        }
+
+        // -------------   PAGINATION PANEL MODULE -----------------
+        // Function to update the pagination buttons
+        function updatePaginationButtons() {
+            const totalPages = Math.ceil(jobOffers.length / itemsPerPage);
+            const pagination = document.getElementById("pagination");
+            pagination.innerHTML = "";
+
+            const ul = document.createElement("ul");
+            ul.classList.add("pagination", "justify-content-center");
+            const previousButton = document.createElement("li");
+            previousButton.classList.add("page-item");
+            const previousLink = document.createElement("a");
+            previousLink.classList.add("page-link");
+            previousLink.href = "#";
+            previousLink.setAttribute("aria-label", "Previous");
+            previousLink.innerHTML = '<span aria-hidden="true">&laquo; Previous</span>';
+            previousButton.appendChild(previousLink);
+
+            // Add a click event listener to the "Previous" button
+            previousButton.addEventListener("click", function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadJobOffersForPage(currentPage);
+                    updatePaginationButtons();
+                }
+            });
+            ul.appendChild(previousButton);
+
+            // Add number buttons for page navigation
+            for (let page = 1; page <= 8; page++) {
+                const li = document.createElement("li");
+                li.classList.add("page-item");
+
+                const button = document.createElement("button");
+                button.classList.add("page-link");
+                button.textContent = page;
+                button.addEventListener("click", function () {
+                    currentPage = page;
+                    loadJobOffersForPage(currentPage);
+                    updatePaginationButtons();
+                });
+                li.appendChild(button);
+
+                if (page === currentPage) {
+                    li.classList.add("active");
+                }
+
+                ul.appendChild(li);
+            }
+
+            // Add a click event to the "Next" button
+            const nextButton = document.createElement("li");
+            nextButton.classList.add("page-item");
+            const nextLink = document.createElement("a");
+            nextLink.classList.add("page-link");
+            nextLink.href = "#";
+            nextLink.setAttribute("aria-label", "Next");
+            nextLink.innerHTML = 'Next <span aria-hidden="true">&raquo;</span>';
+            nextButton.appendChild(nextLink);
+            nextButton.addEventListener("click", function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadJobOffersForPage(currentPage);
+                    updatePaginationButtons();
+                }
+            });
+            ul.appendChild(nextButton);
+
+            pagination.appendChild(ul);
+        }
+
+        // -------------   FILTER PANEL MODULE -----------------
+        // Get the search input field by its ID
+        const keywordInput = document.getElementById("searchKeyword");
+
+        // Function to load all job offers with optional keyword filter
+        function loadAllJobOffers(keyword = "") {
+            fetch(apiUrl)
+                .then((response) => response.json())
+                .then((data) => {
+                    // Filter job offers by keyword in various fields
+                    // Create separate arrays for each field to filter
+                    const filteredByCompany = data.filter((offer) =>
+                        offer.company.toLowerCase().includes(keyword.toLowerCase())
+                    );
+                    const filteredByName = data.filter((offer) =>
+                        offer.name.toLowerCase().includes(keyword.toLowerCase())
+                    );
+                    const filteredByJobType = data.filter((offer) =>
+                        offer.jobType.toLowerCase().includes(keyword.toLowerCase())
+                    );
+
+                    jobOffers = [
+                        ...filteredByCompany,
+                        ...filteredByName,
+                        ...filteredByJobType,
+                    ];
+
+                    // Delete duplicates
+                    jobOffers = Array.from(new Set(jobOffers));
+
+                    updatePaginationButtons();
+                    loadJobOffersForPage(currentPage);
+                })
+                .catch((error) => {
+                    console.error(`Error loading job offers: ${error}`);
+                });
+        }
+
+        // Add "keyup" events to perform real-time search
+        keywordInput.addEventListener("keyup", function () {
+            const keyword = keywordInput.value.trim();
+            loadAllJobOffers(keyword);
+        });
+
+        // Add a submit event to the filter form
+        const jobFilterForm = document.getElementById("jobFilterForm");
+        jobFilterForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const keyword = keywordInput.value.trim();
+            loadAllJobOffers(keyword);
+        });
+
+        // Add a "click" event to the "Reset" button
+        const resetButton = document.querySelector(".btn-customReset");
+        resetButton.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            // Limpia los campos de búsqueda
+            keywordInput.value = "";
+
+            // Hide the details of all cards
+            const allCards = document.querySelectorAll(".details-container");
+            allCards.forEach((card) => {
+                card.style.display = "none";
+            });
+            loadAllJobOffers();
+        });
+
+
+        // -------------   CHANGE OF WINDOW MODULE -----------------
+        window.addEventListener('hashchange', () => {
+            const currentRoute = window.location.hash;
+
+            // Hide all sections
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('login').style.display = 'none';
+
+            // Show the section corresponding to the current route
+            if (currentRoute === '#/login') {
+                document.getElementById('login').style.display = 'block';
+            } else {
+                document.getElementById('home').style.display = 'block';
+            }
+        });
+
+        // Load the initial view when the page loads
+        window.addEventListener('load', () => {
+            const currentRoute = window.location.hash;
+            if (!currentRoute || currentRoute === '#/login') { // Cambiado a '#/login' para abrir por defecto
+                window.location.hash = '#/login'; // Establece '#/login' como ruta por defecto
+                document.getElementById('login').style.display = 'block';
+            } else {
+                document.getElementById('home').style.display = 'block';
+            }
+        });
+
+        // -------------   LOGIN PAGE MODULE -----------------
+        let loginValidation = angular.module('loginValidation', []);
+
+        // Create Angular controller
+        loginValidation.controller('loginController', function ($scope) {
+            $scope.userInfoVisible = false;
+
+            // Function to submit the form after all validation has occurred			
+            $scope.submitLoginForm = function () {
+                // Check to make sure the form is completely valid
+                if ($scope.loginForm.$valid) {
+                    // Get the values entered by the user
+                    const username = $scope.user.username;
+                    const password = $scope.user.password;
+
+                    // Check if the username and password are "admin"
+                    if (username === "admin" && password === "admin") {
+                        // Redirect to the job offers page (or wherever you want)
+                        window.location.href = "#/home";
+                    } else {
+                        // Display an error message if the credentials are incorrect
+                        alert("Incorrect credentials. Please try again.");
+                    }
+
+                    // Reset the form to clear the fields
+                    $scope.loginForm.$setPristine();
+                    $scope.loginForm.$setUntouched();
+                    $scope.user = {}; // Clear user data
+                }
+            };
+        });
+        // Load all job offers when the page loads
+        loadAllJobOffers();
+    });
+</script>
+
+
+</html>
