@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify API</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+        </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <h1>Music API</h1>
+
+    <div class="card-group mt-4">
+        <div class="d-flex justify-content-between">
+            <div class="album-card" style="width: 18rem;" data-html-file="albumes.html">
+                <img src="/img/estrella.jfif" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title mt-3">Álbumes</h5>
+                </div>
+            </div>
+            <div class="artist-card" style="width: 18rem;" data-html-file="artistas.html">
+                <img src="/img/mora2.webp" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title mt-3">Artistas</h5>
+
+                </div>
+            </div>
+            <div class="song-card" style="width: 18rem;" data-html-file="canciones.html">
+                <img src="/img/eladio2.webp" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title mt-3">Canciones</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const buscador = document.getElementById("buscador");
+            let submit = document.getElementById("submit");
+            const cards = document.querySelectorAll(".album-card, .artist-card, .song-card");
+
+            cards.forEach(card => {
+                card.addEventListener("click", function () {
+                    const htmlFile = card.getAttribute("data-html-file");
+                    if (htmlFile) {
+                        window.location.href = htmlFile;
+                    }
+                });
+            });
+
+            async function getSongs(song) {
+                console.log(song)
+
+                try {
+                    const options = {
+                        method: 'GET',
+                        headers: {
+                            'X-RapidAPI-Key': '8dfd1f11acmshea6049db4015628p1552f5jsn1e277e17d84f',
+                            'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
+                        }
+                    };
+
+
+                    let url = `https://spotify23.p.rapidapi.com/search/?q=${song}&type=multi&offset=0&limit=15&numberOfTopResults=5`;
+                    let data = await fetch(url, options);
+                    let res = await data.json();
+                    let songs = res.tracks.items;
+
+                    songs.forEach(songItem => {
+                        var h2 = document.createElement('h2');
+                        console.log(songItem.data.name);
+                        h2.innerHTML = songItem.data.name;
+                        document.body.appendChild(h2);
+                    })
+                } catch (error) {
+                    console.log("error:" + $(error))
+                }
+
+
+            }
+
+
+        });
+    </script>
+
+
+</body>
+
+</html>
