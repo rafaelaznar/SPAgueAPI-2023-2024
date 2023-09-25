@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recetas de TheMealDB</title>
+    <!-- Incluye la biblioteca Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+   
+    <div class="container mt-4">
+        <h1>Recetas de TheMealDB</h1>
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar receta...">
+            <button class="btn btn-primary" id="searchButton">Buscar</button>
+        </div>    
+        <div class="row" id="recipe-container"></div>
+    </div>
+
+    <!-- Plantilla de tarjeta Bootstrap -->
+    <template id="recipe-card-template">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <img src="" class="card-img-top" alt="Imagen de la receta">
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <button class="btn btn-primary view-ingredients">Ver Ingredientes</button>
+                    <button class="btn btn-success view-instructions">Ver Recetas</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Modal para mostrar ingredientes e instrucciones -->
+    <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="recipeModalLabel">Detalles de la Receta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="ingredients" style="display: none;">
+                        <h4>Ingredientes:</h4>
+                        <ul></ul>
+                    </div>
+                    <div class="instructions" style="display: none;">
+                        <h4>Recetas:</h4>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const recipeContainer = document.getElementById('recipe-container');
+
+            for (let i=0; i<99; i++) {
+                fetch('https://www.themealdb.com/api/json/v1/1/random.php')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('No se ha podido obtener respuesta');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const recipe = data.meals[0];
+                        if (recipe) {
+                            createRecipeCard(recipe);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ha habido un error:', error);
+                    });
+                }
+
+            function createRecipeCard(recipe) {
+                const cardTemplate = document.getElementById('recipe-card-template');
+                const cardClone = document.importNode(cardTemplate.content, true);
+
+                const cardTitle = cardClone.querySelector('.card-title');
+                cardTitle.textContent = recipe.strMeal;
+
+                const cardImage = cardClone.querySelector('.card-img-top');
+                cardImage.src = recipe.strMealThumb;
+
+                const viewIngredientsButton = cardClone.querySelector('.view-ingredients');
+                const viewInstructionsButton = cardClone.querySelector('.view-instructions');
+
+                viewIngredientsButton.dataset.mealId = recipe.idMeal;
+                viewInstructionsButton.dataset.mealId = recipe.idMeal;
+
+                viewIngredientsButton.addEventListener('click', () => {
+                    showIngredients(viewIngredientsButton.dataset.mealId);
+                });
+
+                viewInstructionsButton.addEventListener('click', () => {
+                    showInstructions(viewInstructionsButton.dataset.mealId);
+                });
+
+                recipeContainer.appendChild(cardClone);
+            }
+
+            function showIngredients(mealId) {
+                fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No se ha podido obtener respuesta');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const recipeData = data.meals[0];
+                    if (recipeData) {
+                        const ingredients = getIngredients(recipeData);
+                        const title = `${recipeData.strMeal} - Ingredientes`;
+                        showModal(title, ingredients);
+                    }
+                })
+                .catch(error => {
+                    console.error('Ha habido un error:', error);
+                });
+
+            }
+
+            function showInstructions(mealId) {
+                fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`)
+                .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se ha podido obtener respuesta');
+                }
+                return response.json();
+                })
+                .then(data => {
+                    const recipeData = data.meals[0];
+                    if (recipeData) {
+                        const title = `${recipeData.strMeal} - Instrucciones de la receta`;
+                        showModal(title, recipeData.strInstructions);
+                    }
+                })
+                .catch(error => {
+                    console.error('Ha habido un error:', error);
+                });
+            }
+
+            function showModal(title, content) {
+                const modal = new bootstrap.Modal(document.getElementById('recipeModal'));
+                const modalTitle = modal._element.querySelector('.modal-title');
+                const modalBody = modal._element.querySelector('.modal-body');
+
+                modalTitle.textContent = title;
+                modalBody.innerHTML = content;
+
+                modal.show();
+            }
+
+            function getIngredients(recipe) {
+                const ingredients = [];
+                for (let i = 1; i <= 20; i++) {
+                    const ingredient = recipe[`strIngredient${i}`];
+                    const measure = recipe[`strMeasure${i}`];
+                    if (ingredient && measure) {
+                        ingredients.push(`${measure} ${ingredient}`);
+                    }
+                }
+                return ingredients.join('<br>');
+            }
+
+            const searchButton = document.getElementById('searchButton');
+            searchButton.addEventListener('click', () => {
+                // Obtiene el valor del campo de entrada de texto
+                const searchText = document.getElementById('searchInput').value.trim();
+
+                // Llama a una función para filtrar y mostrar las recetas
+                filterAndDisplayRecipes(searchText);
+            });
+
+            function filterAndDisplayRecipes(searchText) {
+                // Realiza una solicitud a la API para buscar recetas por nombre
+                fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchText}`)
+                .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se ha podido obtener respuesta de la API');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const recipes = data.meals;
+
+                // Obtén el contenedor de las tarjetas de recetas
+                const recipeContainer = document.getElementById('recipe-container');
+
+                // Borra todas las tarjetas de recetas existentes
+                recipeContainer.innerHTML = '';
+
+                if (recipes) {
+                    // Itera sobre las recetas y crea tarjetas para cada una
+                    recipes.forEach(recipe => {
+                        const cardTemplate = document.getElementById('recipe-card-template');
+                        const cardClone = document.importNode(cardTemplate.content, true);
+
+                        const cardTitle = cardClone.querySelector('.card-title');
+                        cardTitle.textContent = recipe.strMeal;
+
+                        const cardImage = cardClone.querySelector('.card-img-top');
+                        cardImage.src = recipe.strMealThumb;
+
+                        const viewIngredientsButton = cardClone.querySelector('.view-ingredients');
+                        const viewInstructionsButton = cardClone.querySelector('.view-instructions');
+
+                        viewIngredientsButton.dataset.mealId = recipe.idMeal;
+                        viewInstructionsButton.dataset.mealId = recipe.idMeal;
+
+                        viewIngredientsButton.addEventListener('click', () => {
+                            showIngredients(viewIngredientsButton.dataset.mealId);
+                        });
+
+                        viewInstructionsButton.addEventListener('click', () => {
+                            showInstructions(viewInstructionsButton.dataset.mealId);
+                        });
+
+                        recipeContainer.appendChild(cardClone);
+                    });
+                } else {
+                    // Si no se encontraron recetas, muestra un mensaje de error
+                    recipeContainer.innerHTML = '<p>No se encontraron recetas. Prueba con otro nombre.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Ha habido un error:', error);
+            });
+        }
+
+        });
+
+    </script>
+
+    <!-- Incluye la biblioteca Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html> 
