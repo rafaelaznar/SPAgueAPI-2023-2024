@@ -138,7 +138,7 @@
 
             const mostrarInformacion = async (piloto) => {
                 try {
-                    const pilotoResponse = await fetch(`http://ergast.com/api/f1/drivers/${piloto.driverId}.json`);
+                    const pilotoResponse = await fetch(`https://ergast.com/api/f1/drivers/${piloto.driverId}.json`);
                     const pilotoData = await pilotoResponse.json();
                     const pilotoInfo = pilotoData.MRData.DriverTable.Drivers[0];
 
