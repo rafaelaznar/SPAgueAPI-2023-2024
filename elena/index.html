@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Simpson Characters</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /**estilo**/ 
+      @font-face {
+    font-family: 'HomerSimpsonRevised';
+    src: url('Homer_Simpson_Revised.ttf') format('truetype');
+     
+}
+        
+
+        
+        .navbar-logo {
+            max-height: 40px;
+        }
+        .navbar-yellow {
+            background-color: #ffc107;
+        }
+
+        /* Estilos para el cuerpo de la página */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* Estilos para las tarjetas de personajes */
+        .character-card {
+            font-family: 'HomerSimpsonRevised', sans-serif;
+
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+        }
+        .character-card h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .character-card img {
+            max-width: 100%;
+            height: auto;
+        }
+        .show-info-button {
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .show-info-button:hover {
+            background-color: #ffca2c;
+        }
+
+     
+        .modal-content {
+            background-color: #ffca2c;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+     
+        .h2 {
+            font-family: 'HomerSimpsonRevised', sans-serif;
+        }
+        .pagination-button {
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            padding: 5px 10px;
+            font-size: 16px;
+            margin-right: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .pagination-button:hover {
+            background-color: #ffca2c;
+        }
+        #modal-content h2 {
+    font-family: 'HomerSimpsonRevised', sans-serif; /* Aplica la fuente personalizada */
+    color: red; 
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-yellow">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <img src="simpson.png" alt="Simpsons Logo" class="navbar-logo">
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div id="character-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 justify-content-center"></div>
+        <div id="pagination" style="text-align: center;"></div>
+    </div>
+
+    <div id="character-modal" class="modal">
+        <div class="modal-content" id="modal-content">
+            <span class="close-button" id="close-button-modal">&times;</span>
+          
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const characterContainer = document.getElementById("character-container");
+            const modal = document.getElementById("character-modal");
+            const modalContent = document.getElementById("modal-content");
+            const pagination = document.getElementById("pagination");
+
+          
+            let currentPage = 1;
+            const charactersPerPage = 20;
+            const totalPages = 10; // Tres páginas fijas
+
+          
+            function showCharacter(character) {
+              
+                const card = document.createElement("div");
+                card.classList.add("character-card");
+
+               
+                  
+                    card.innerHTML = `
+                        <h2>${character.Nombre}</h2>
+                        <img src="${character.Imagen}" style="width: 200px; height: auto; " />
+                        <button class="show-info-button">Mostrar Info</button>
+                    `;
+              
+                   
+                    
+             
+
+                characterContainer.appendChild(card);
+
+                // Agregar un evento de clic al botón "Show Info"
+                const showInfoButton = card.querySelector(".show-info-button");
+                showInfoButton.addEventListener("click", () => {
+                    showModal(character);
+                });
+            }
+
+            // Función para mostrar la información detallada de un personaje en la modal
+            function showModal(character) {
+                // Rellenar la modal con la información del personaje
+                modalContent.innerHTML = `
+                    <span class="close-button" id="close-button-modal">&times;</span>
+                    <h2>${character.Nombre}</h2>
+             
+                    <p>  <b> Puesto de trabajo: </b> ${character.Ocupacion || "N/A"}</p>
+                <p>   <b>   Genero :  </b> ${character.Genero || "N/A"}</p>
+                   <p> <b>Estado :  </b>  ${character.Estado || "N/A"}</p>
+                     <p> <b>Historia:   </b> ${character.Historia || "N/A"}</p>
+                `;
+
+                modal.style.display = "block";
+
+                // Agregar un evento de clic al botón de cierre de la modal para cerrarla
+                const closeButtonModal = document.getElementById("close-button-modal");
+                closeButtonModal.addEventListener("click", () => {
+                    modal.style.display = "none";
+                });
+
+                // Agregar un evento de clic a la modal para cerrarla cuando se hace clic fuera de ella
+                modal.addEventListener("click", (event) => {
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                });
+            }
+
+            // Función para obtener los datos de los personajes desde la API
+            function fetchCharacters() {
+                fetch('https://apisimpsons.fly.dev/api/personajes?limit=200&page=1')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Filtrar para obtener solo los personajes de la página actual
+                        charactersData = data.docs.filter((character, index) => {
+                            const startIndex = (currentPage - 1) * charactersPerPage;
+                            const endIndex = startIndex + charactersPerPage;
+                            return index >= startIndex && index < endIndex;
+                        });
+                        displayCharacters(currentPage);
+                        createPagination();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            // Función para mostrar personajes en la página actual
+            function displayCharacters(page) {
+                // Limpiar el contenedor de personajes
+                characterContainer.innerHTML = '';
+
+                // Mostrar los personajes en la página
+                charactersData.forEach(character => {
+                    showCharacter(character);
+                });
+            }
+
+            // Función para crear la paginación
+            function createPagination() {
+                pagination.innerHTML = '';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageButton = document.createElement("button");
+                    pageButton.textContent = i;
+                    pageButton.classList.add("pagination-button");
+
+                    pageButton.addEventListener("click", () => {
+                        currentPage = i;
+                        fetchCharacters(); // Obtener nuevos personajes para la página actual
+                    });
+
+                    pagination.appendChild(pageButton);
+                }
+            }
+
+            // Inicializar la aplicación
+            fetchCharacters();
+        });
+    </script>
+</body>
+</html>
