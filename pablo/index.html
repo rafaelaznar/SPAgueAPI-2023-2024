@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <link rel="icon" type="image/x-icon" href="icon.png">
+
+    <title>PokémonDirectory</title>
+</head>
+<style>
+    footer {
+        position: sticky;
+        bottom: 0;
+    }
+
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    #searchInput:focus {
+    outline: none;
+    border-color: gray; /* Puedes cambiar el color del borde aquí */
+}
+
+
+    /* Colores de fondo personalizados para las píldoras */
+    .bg-normal {
+        background-color: #808080;
+        /* Gris */
+        color: white;
+    }
+
+    .bg-fire {
+        background-color: #FFA500;
+        /* Naranja */
+        color: white;
+    }
+
+    .bg-water {
+        background-color: #0000FF;
+        /* Azul */
+        color: white;
+    }
+
+    .bg-grass {
+        background-color: #008000;
+        /* Verde */
+        color: white;
+    }
+
+    .bg-flying {
+        background-color: #87CEEB;
+        /* Azul claro */
+        color: white;
+    }
+
+    .bg-fighting {
+        background-color: #A52A2A;
+        /* Naranja oscuro */
+        color: white;
+    }
+
+    .bg-poison {
+        background-color: #800080;
+        /* Morado */
+        color: white;
+    }
+
+    .bg-electric {
+        background-color: #d8d826;
+        /* Amarillo */
+        color: white;
+    }
+
+    .bg-ground {
+        background-color: #D2B48C;
+        /* Marrón claro */
+        color: white;
+    }
+
+    .bg-rock {
+        background-color: #696969;
+        /* Gris oscuro */
+        color: white;
+    }
+
+    .bg-psychic {
+        background-color: #FF69B4;
+        /* Rosa */
+        color: white;
+    }
+
+    .bg-ice {
+        background-color: #00CED1;
+        /* Azul turquesa */
+        color: white;
+    }
+
+    .bg-bug {
+        background-color: #78b43b;
+        /* Verde claro */
+        color: white;
+    }
+
+    .bg-ghost {
+        background-color: #483D8B;
+        /* Morado oscuro */
+        color: white;
+    }
+
+    .bg-steel {
+        background-color: #D3D3D3;
+        /* Gris claro */
+        color: white;
+    }
+
+    .bg-dragon {
+        background-color: #00008B;
+        /* Azul oscuro */
+        color: white;
+    }
+
+    .bg-dark {
+        background-color: #8B4513;
+        /* Marrón oscuro */
+        color: white;
+    }
+
+    .bg-fairy {
+        background-color: #FFB6C1;
+        /* Rosa claro */
+        color: white;
+    }
+
+    .overlay-container {
+        position: relative;
+    }
+
+    .overlay-container img {
+        width: 80%;
+        height: auto;
+    }
+
+    .img-modal {
+        width: 23%;
+        height: auto;
+    }
+
+    .img-modal-other {
+        width: 10%;
+        height: auto;
+    }
+</style>
+
+<body style="background-color: rgba(0,0,0,0.1); display: flex; flex-direction: column; min-height: 100vh; margin: 0;"">
+    <header>
+        <!-- Navbar -->
+        <nav class=" navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarExample01"
+            style="display: flex; justify-content: left; align-items: center;">
+            <img src="logo4.png" alt="Logo" style="max-height: 100px;">
+        </div>
+        <div class="input-group" style="max-width: 300px;"> <!-- Ajusta el ancho máximo según tu preferencia -->
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por nombre de Pokémon"
+                style="font-size: 14px; padding: 5px;">
+            <button class="btn btn-secondary" id="searchBtn" style="font-size: 14px; padding: 5px;">Buscar</button>
+        </div>
+    </div>
+    </nav>
+    </header>
+
+    <div style="flex: 1; overflow-y: auto;">
+        <div class="container">
+            <div class="row" id="pokemonContainer" style="margin-top: 2%;">
+                <!-- Tarjetas de Pokémon se cargarán aquí -->
+            </div>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <button class="btn btn-outline-secondary" id="firstPageBtn">Primera Página</button>
+                    <button class="btn btn-outline-dark" id="prevPageBtn">Página Anterior</button>
+                    <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                    <button class="btn btn-outline-dark" id="nextPageBtn">Página Siguiente</button>
+                    <button class="btn btn-outline-secondary" id="lastPageBtn">Última Página</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <footer style="margin-top: 1%;">
+        <div class="text-center p-4 bg-light">
+            <span>Pablo Molero Marín © 2023</span>
+        </div>
+    </footer>
+
+    <script>
+        const pageSize = 18; // Cantidad de resultados por página
+        let currentPage = 1; // Página actual
+        let totalPokemon; // Se obtendrá el límite máximo de Pokémon
+
+        // Función para cargar el límite máximo de Pokémon desde la API de PokeAPI
+        function fetchMaxPokemonLimit() {
+            return fetch('https://pokeapi.co/api/v2/pokemon-species?limit=1')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    totalPokemon = data.count; // Establecer el límite máximo de Pokémon
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        // Función para cargar los datos de Pokémon y mostrar las tarjetas
+        function loadPokemonPage(offset, limit) {
+            fetchPokemonData(offset, limit)
+                .then(pokemonArray => {
+                    return Promise.all(pokemonArray.map(pokemon => fetchPokemonDetails(pokemon.url)));
+                })
+                .then(allPokemonDetails => {
+                    // Limpiar el contenedor antes de agregar nuevas tarjetas
+                    document.getElementById('pokemonContainer').innerHTML = '';
+
+                    // Recorrer el array de Pokémon y mostrarlos en tarjetas
+                    allPokemonDetails.forEach(pokemonDetails => {
+                        const card = document.createElement('div');
+                        card.classList.add('col-md-2', 'mb-3'); // Cambiado a 2 columnas por fila
+
+                        // Generar un ID de modal único para cada Pokémon
+                        const modalId = `modal_${pokemonDetails.id}`;
+
+                        //Convertir la primera letra del pokémon en mayúscula
+                        let nombrePokemon = pokemonDetails.name;
+                        function capitalizarPrimeraLetra(str) {
+                            return str.charAt(0).toUpperCase() + str.slice(1);
+                        }
+
+                        card.innerHTML = `
+                        <div class="card" style="text-align:center; border-radius:4%;">
+                            <div class="overlay-container">
+                                <img src="${pokemonDetails.sprites.other['official-artwork'].front_default}" class="img-fluid" />
+                            </div>
+
+
+                            <div class="card-body">
+                                <h5 class="card-title">${capitalizarPrimeraLetra(pokemonDetails.name)}</h5>
+                                <p class="card-text">Número Pokédex: ${pokemonDetails.id}</p>
+                                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#${modalId}">
+                                Detalles
+                                </button>
+    
+                                <!-- Modal -->
+                                <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Datos del Pokémon</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="${pokemonDetails.sprites.front_default}" class="img-fluid img-modal" /><img src="${pokemonDetails.sprites.back_default}" class="img-fluid img-modal" />
+                                        <img src="${pokemonDetails.sprites.front_shiny}" class="img-fluid img-modal" /><img src="${pokemonDetails.sprites.back_shiny}" class="img-fluid img-modal" />
+                                        <h6><b>Nombre:</b> ${capitalizarPrimeraLetra(pokemonDetails.name)}</h6>
+                                        <h6><b>Tipos:</b> 
+                                            <span class="badge rounded-pill ${getTypeBadgeClass(pokemonDetails.types[0].type.name)}">${capitalizarPrimeraLetra(pokemonDetails.types[0].type.name)}</span>
+                                            ${pokemonDetails.types[1] ? `<span class="badge rounded-pill ${getTypeBadgeClass(pokemonDetails.types[1].type.name)}">${capitalizarPrimeraLetra(pokemonDetails.types[1].type.name)}</span>` : ''}
+                                        </h6>
+
+                                        <h6><b>Peso:</b> ${pokemonDetails.weight / 10}Kg</h6>
+                                        <h6><b>Altura:</b> ${pokemonDetails.height / 10}m</h6><br>
+                                        <h6><b><u>Otros sprites</u></b></h6>
+                                        <img src="${pokemonDetails.sprites.other.home.front_default}" class="img-fluid img-modal-other" />
+                                        <img src="${pokemonDetails.sprites.other.dream_world.front_default}" class="img-fluid img-modal-other" />
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+
+                        document.getElementById('pokemonContainer').appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        // Calcular la cantidad total de páginas
+        function calculateTotalPages() {
+            return Math.ceil(totalPokemon / pageSize);
+        }
+
+        // Función para actualizar la paginación
+        function updatePagination() {
+            document.getElementById('totalPages').textContent = calculateTotalPages();
+            document.getElementById('currentPage').textContent = currentPage;
+        }
+
+        // Evento para cambiar de página hacia adelante
+        document.getElementById('nextPageBtn').addEventListener('click', () => {
+            if (currentPage < calculateTotalPages()) {
+                currentPage++;
+                const offset = (currentPage - 1) * pageSize;
+                loadPokemonPage(offset, pageSize);
+                updatePagination();
+            }
+        });
+
+        // Evento para cambiar de página hacia atrás
+        document.getElementById('prevPageBtn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                const offset = (currentPage - 1) * pageSize;
+                loadPokemonPage(offset, pageSize);
+                updatePagination();
+            }
+        });
+
+        // Evento para ir a la primera página
+        document.getElementById('firstPageBtn').addEventListener('click', () => {
+            if (currentPage !== 1) {
+                currentPage = 1;
+                const offset = (currentPage - 1) * pageSize;
+                loadPokemonPage(offset, pageSize);
+                updatePagination();
+            }
+        });
+
+        // Evento para ir a la última página
+        document.getElementById('lastPageBtn').addEventListener('click', () => {
+            const totalPages = calculateTotalPages();
+            if (currentPage !== totalPages) {
+                currentPage = totalPages;
+                const offset = (currentPage - 1) * pageSize;
+                loadPokemonPage(offset, pageSize);
+                updatePagination();
+            }
+        });
+
+        // Función para obtener los datos de Pokémon desde la API de PokeAPI usando promesas
+        function fetchPokemonData(offset, limit) {
+            return fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    return data.results;
+                });
+        }
+
+        function getTypeBadgeClass(typeName) {
+            switch (typeName) {
+                case 'normal':
+                    return 'bg-normal';
+                case 'fire':
+                    return 'bg-fire';
+                case 'water':
+                    return 'bg-water';
+                case 'grass':
+                    return 'bg-grass';
+                case 'flying':
+                    return 'bg-flying';
+                case 'fighting':
+                    return 'bg-fighting';
+                case 'poison':
+                    return 'bg-poison';
+                case 'electric':
+                    return 'bg-electric';
+                case 'ground':
+                    return 'bg-ground';
+                case 'rock':
+                    return 'bg-rock';
+                case 'psychic':
+                    return 'bg-psychic';
+                case 'ice':
+                    return 'bg-ice';
+                case 'bug':
+                    return 'bg-bug';
+                case 'ghost':
+                    return 'bg-ghost';
+                case 'steel':
+                    return 'bg-steel';
+                case 'dragon':
+                    return 'bg-dragon';
+                case 'dark':
+                    return 'bg-dark';
+                case 'fairy':
+                    return 'bg-fairy';
+                default:
+                    return 'bg-secondary text-dark'; // Por defecto, estilo gris
+            }
+        }
+
+        // Función para obtener detalles de un Pokémon por su URL usando promesas
+        function fetchPokemonDetails(url) {
+            return fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                });
+        }
+
+        // Llamar a la función para obtener el límite máximo de Pokémon
+        fetchMaxPokemonLimit().then(() => {
+            // Cargar la primera página al cargar la página web
+            loadPokemonPage(0, pageSize);
+            updatePagination();
+        });
+
+        // Función para buscar Pokémon por nombre
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            let apiUrl;
+
+            if (searchInput) {
+                // Si se proporciona una cadena de búsqueda, busca un Pokémon específico
+                apiUrl = `https://pokeapi.co/api/v2/pokemon/${searchInput}`;
+            } else {
+                // Si no se proporciona una cadena de búsqueda, carga todos los Pokémon
+                apiUrl = `https://pokeapi.co/api/v2/pokemon?offset=0&limit=${pageSize}`;
+            }
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Limpiar el contenedor antes de agregar las tarjetas de Pokémon
+                    document.getElementById('pokemonContainer').innerHTML = '';
+
+                    if (searchInput) {
+                        // Si se proporciona una cadena de búsqueda, muestra el Pokémon buscado
+                        const pokemonData = data;
+
+                        // Limpiar el contenedor antes de agregar la tarjeta del Pokémon buscado
+                        document.getElementById('pokemonContainer').innerHTML = '';
+                        const card = document.createElement('div');
+                        card.classList.add('col-md-2', 'mb-3'); // Cambiado a 2 columnas por fila
+
+                        // Generar un ID de modal único para el Pokémon buscado
+                        const modalId = `modal_${pokemonData.id}`;
+
+                        //Convertir la primera letra del pokémon en mayúscula
+                        let nombrePokemon = pokemonData.name;
+                        function capitalizarPrimeraLetra(str) {
+                            return str.charAt(0).toUpperCase() + str.slice(1);
+                        }
+
+                        card.innerHTML = `
+                        <div class="card" style="text-align:center; border-radius:4%;">
+                            <div class="overlay-container">
+                                <img src="${pokemonData.sprites.other['official-artwork'].front_default}" class="img-fluid" />
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title">${capitalizarPrimeraLetra(pokemonData.name)}</h5>
+                                <p class="card-text">Número Pokédex: ${pokemonData.id}</p>
+                                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#${modalId}">
+                                Detalles
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Datos del Pokémon</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="${pokemonData.sprites.front_default}" class="img-fluid img-modal" /><img src="${pokemonData.sprites.back_default}" class="img-fluid img-modal" />
+                                        <img src="${pokemonData.sprites.front_shiny}" class="img-fluid img-modal" /><img src="${pokemonData.sprites.back_shiny}" class="img-fluid img-modal" />
+                                        <h6><b>Nombre:</b> ${capitalizarPrimeraLetra(pokemonData.name)}</h6>
+                                        <h6><b>Tipos:</b> 
+                                            <span class="badge rounded-pill ${getTypeBadgeClass(pokemonData.types[0].type.name)}">${capitalizarPrimeraLetra(pokemonData.types[0].type.name)}</span>
+                                            ${pokemonData.types[1] ? `<span class="badge rounded-pill ${getTypeBadgeClass(pokemonData.types[1].type.name)}">${capitalizarPrimeraLetra(pokemonData.types[1].type.name)}</span>` : ''}
+                                        </h6>
+
+                                        <h6><b>Peso:</b> ${pokemonData.weight / 10}Kg</h6>
+                                        <h6><b>Altura:</b> ${pokemonData.height / 10}m</h6><br>
+                                        <h6><b><u>Otros sprites</u></b></h6>
+                                        <img src="${pokemonData.sprites.other.home.front_default}" class="img-fluid img-modal-other" />
+                                        <img src="${pokemonData.sprites.other.dream_world.front_default}" class="img-fluid img-modal-other" />
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+
+                        document.getElementById('pokemonContainer').appendChild(card);
+                        
+                    } else {
+                        // Si no se proporciona una cadena de búsqueda, muestra todos los Pokémon
+                        const pokemonArray = data.results;
+                        fetchPokemonDetailsForArray(pokemonArray);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    // Mostrar un mensaje de error si el Pokémon no se encuentra
+                    document.getElementById('pokemonContainer').innerHTML = '<p>Pokémon no encontrado.</p>';
+                });
+        });
+
+        // Función para obtener detalles de un array de Pokémon
+        function fetchPokemonDetailsForArray(pokemonArray) {
+            // Obtener los detalles de cada Pokémon en paralelo
+            const promises = pokemonArray.map(pokemon => fetchPokemonDetails(pokemon.url));
+
+            Promise.all(promises)
+                .then(allPokemonDetails => {
+                    // Limpiar el contenedor antes de agregar nuevas tarjetas
+                    document.getElementById('pokemonContainer').innerHTML = '';
+
+                    // Recorrer el array de Pokémon y mostrarlos en tarjetas
+                    allPokemonDetails.forEach(pokemonDetails => {
+                        const card = document.createElement('div');
+                        card.classList.add('col-md-2', 'mb-3'); // Cambiado a 2 columnas por fila
+
+                        // Generar un ID de modal único para cada Pokémon
+                        const modalId = `modal_${pokemonDetails.id}`;
+
+                        //Convertir la primera letra del pokémon en mayúscula
+                        let nombrePokemon = pokemonDetails.name;
+                        function capitalizarPrimeraLetra(str) {
+                            return str.charAt(0).toUpperCase() + str.slice(1);
+                        }
+
+                        card.innerHTML = `
+                <div class="card" style="text-align:center; border-radius:4%;">
+                    <div class="overlay-container">
+                        <img src="${pokemonDetails.sprites.other['official-artwork'].front_default}" class="img-fluid" />
+                    </div>
+
+
+                    <div class="card-body">
+                        <h5 class="card-title">${capitalizarPrimeraLetra(pokemonDetails.name)}</h5>
+                        <p class="card-text">Número Pokédex: ${pokemonDetails.id}</p>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#${modalId}">
+                        Detalles
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Datos del Pokémon</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="${pokemonDetails.sprites.front_default}" class="img-fluid img-modal" /><img src="${pokemonDetails.sprites.back_default}" class="img-fluid img-modal" />
+                                <img src="${pokemonDetails.sprites.front_shiny}" class="img-fluid img-modal" /><img src="${pokemonDetails.sprites.back_shiny}" class="img-fluid img-modal" />
+                                <h6><b>Nombre:</b> ${capitalizarPrimeraLetra(pokemonDetails.name)}</h6>
+                                <h6><b>Tipos:</b> 
+                                    <span class="badge rounded-pill ${getTypeBadgeClass(pokemonDetails.types[0].type.name)}">${capitalizarPrimeraLetra(pokemonDetails.types[0].type.name)}</span>
+                                    ${pokemonDetails.types[1] ? `<span class="badge rounded-pill ${getTypeBadgeClass(pokemonDetails.types[1].type.name)}">${capitalizarPrimeraLetra(pokemonDetails.types[1].type.name)}</span>` : ''}
+                                </h6>
+
+                                <h6><b>Peso:</b> ${pokemonDetails.weight / 10}Kg</h6>
+                                <h6><b>Altura:</b> ${pokemonDetails.height / 10}m</h6><br>
+                                <h6><b><u>Otros sprites</u></b></h6>
+                                <img src="${pokemonDetails.sprites.other.home.front_default}" class="img-fluid img-modal-other" />
+                                <img src="${pokemonDetails.sprites.other.dream_world.front_default}" class="img-fluid img-modal-other" />
+                            </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+
+                        document.getElementById('pokemonContainer').appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+    </script>
+
+</body>
+
+</html>
