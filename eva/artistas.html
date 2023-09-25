@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify API</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+        </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <h1>ARTISTAS</h1>
+    <form action="">
+        <input type="text" id="buscador">
+        <button type="submit" id="submit">Buscar</button>
+    </form>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const buscador = document.getElementById("buscador");
+            let submit = document.getElementById("submit");
+
+            async function getArtists(artist) {
+                console.log(artist)
+
+                try {
+                    const options = {
+                        method: 'GET',
+                        headers: {
+                            'X-RapidAPI-Key': 'bdb685da64msh35e8a2a0f10c5b1p1fe4fdjsnd569409f9eb5',
+                            'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
+                        }
+                    };
+
+
+                    let url = `https://spotify23.p.rapidapi.com/search/?q=${artist}&type=multi&offset=0&limit=15&numberOfTopResults=5`;
+                    let data = await fetch(url, options);
+                    let res = await data.json();
+                    let artists = res.artists.items;
+
+                    artists.forEach(artistItem => {
+                        var h2 = document.createElement('h2');
+                        console.log(artistItem.data.profile.name);
+                        h2.innerHTML = artistItem.data.profile.name;
+                        document.body.appendChild(h2);
+                    })
+
+                    h2.addEventListener("click", function (e) {
+                        e.preventDefault();
+
+                    })
+                } catch (error) {
+                    console.log("error:" + $(error))
+                }
+
+            }
+
+
+
+            submit.addEventListener("click", function (e) {
+                e.preventDefault();
+                const existingH2Elements = document.querySelectorAll('h2');
+                existingH2Elements.forEach(element => {
+                    element.parentNode.removeChild(element);
+                });
+                let artist = buscador.value;
+                getArtists(artist);
+            });
+
+
+        });
+    </script>
+
+
+</body>
+
+</html>

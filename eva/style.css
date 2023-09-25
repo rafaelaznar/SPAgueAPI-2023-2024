@@ -1,0 +1,90 @@
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: black;
+    color: white;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 32px;
+}
+
+.card-group {
+    display: flex;
+   
+    justify-content: space-between;
+   
+}
+
+.card-group img {
+    width: 200px;
+    height: 200px;
+}
+
+#buscador {
+    padding: 10px;
+    width: 60%;
+    border-radius: 50px;
+    font-size: 16px;
+    border: transparent;
+    background-color: #111;
+    color: white;
+}
+#buscador:hover{
+    border: 1px solid #333;
+}
+
+#submit {
+    padding: 10px 20px;
+    background-color: #1DB954;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.album-card,
+.artist-card,
+.song-card {
+    width: 20rem;
+    height: 23rem;
+    margin: 20px;
+    color: grey;
+    background-color: #111; /* Fondo gris oscuro */
+    border-radius: 15px; /* Bordes redondeados */
+    position: relative;
+}
+
+.card-img-top {
+    border-radius: 50%; 
+    margin-top: 30px;
+   
+}
+
+.album-card:hover,
+.artist-card:hover,
+.song-card:hover {
+    transform: scale(1.05);
+    color: white;
+}
+
+.card-title {
+    text-align: center;
+    padding: 15px;
+    position: absolute;
+    bottom: 0; 
+    left: 0; 
+    right: 0;
+    margin: 30px;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+form {
+    margin-bottom: 25px;
+}
+
