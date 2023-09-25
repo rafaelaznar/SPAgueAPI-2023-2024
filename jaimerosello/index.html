@@ -117,7 +117,7 @@
 
             const cargarDatosAPI = async (year) => {
                 try {
-                    const pilotosResponse = await fetch(`http://ergast.com/api/f1/${year}/drivers.json`);
+                    const pilotosResponse = await fetch(`https://ergast.com/api/f1/${year}/drivers.json`);
                     const pilotosData = await pilotosResponse.json();
                     const pilotos = pilotosData.MRData.DriverTable.Drivers;
 
