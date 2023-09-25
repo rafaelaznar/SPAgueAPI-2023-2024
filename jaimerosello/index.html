@@ -1,0 +1,178 @@
+<!-- Jaime Roselló Gómez -->
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilotos de la Fórmula 1</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #b1b1b1;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+        }
+
+        #logo {
+            width: 100px;
+        }
+
+        #yearFilter {
+            display: flex;
+            align-items: center;
+        }
+
+        #yearSelect {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        #pilotos {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .piloto-card {
+
+            background-color: #dbdbdb;;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .piloto-card:hover {
+            transform: scale(1.05);
+        }
+
+        .piloto-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .escuderia {
+            font-size: 1rem;
+            color: #718096;
+        }
+
+        #informacion {
+            background-color: #dbdbdb;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .info-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .info-item {
+            font-size: 1.25rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="flex justify-between items-center">
+        <img src="f1.png" alt="Logotipo" id="logo">
+        <div id="yearFilter" class="ml-auto">
+            <label for="yearSelect" class="text-white mr-2">Filtrar por año:</label>
+            <select id="yearSelect" class="p-2 bg-gray-400 rounded text-white">
+            </select>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div id="pilotos">
+        </div>
+        <div id="informacion">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const pilotosDiv = document.getElementById("pilotos");
+            const informacionDiv = document.getElementById("informacion");
+            const yearSelect = document.getElementById("yearSelect");
+
+            const cargarDatosAPI = async (year) => {
+                try {
+                    const pilotosResponse = await fetch(`http://ergast.com/api/f1/${year}/drivers.json`);
+                    const pilotosData = await pilotosResponse.json();
+                    const pilotos = pilotosData.MRData.DriverTable.Drivers;
+
+                    pilotosDiv.innerHTML = "";
+
+                    pilotos.forEach((piloto) => {
+                        const divPiloto = document.createElement("div");
+                        divPiloto.className = "piloto-card transform hover:scale-105";
+                        divPiloto.innerHTML = `<div class="piloto-name">${piloto.givenName} ${piloto.familyName}</div>`;
+
+                        divPiloto.addEventListener("click", () => mostrarInformacion(piloto));
+                        pilotosDiv.appendChild(divPiloto);
+                    });
+                } catch (error) {
+                    console.error("Error al cargar datos de los pilotos de la API de Fórmula 1: ", error);
+                }
+            };
+
+            const mostrarInformacion = async (piloto) => {
+                try {
+                    const pilotoResponse = await fetch(`http://ergast.com/api/f1/drivers/${piloto.driverId}.json`);
+                    const pilotoData = await pilotoResponse.json();
+                    const pilotoInfo = pilotoData.MRData.DriverTable.Drivers[0];
+
+                    informacionDiv.innerHTML = `<h2 class="info-title">${pilotoInfo.givenName} ${pilotoInfo.familyName}</h2>
+                                            <p class="info-item">Nacionalidad: ${pilotoInfo.nationality}</p>
+                                            <p class="info-item">Fecha de Nacimiento: ${pilotoInfo.dateOfBirth}</p>
+                                            <p class="info-item">Escudería: ${pilotoInfo.constructorId}</p>
+                                            <p class="info-item">Número de Carrera: ${pilotoInfo.permanentNumber || 'No disponible'}</p>
+                                            <p class="info-item">Debut en Fórmula 1: ${pilotoInfo.debut || 'No disponible'}</p>
+                                            <p class="info-item">Puntos de Carrera: ${pilotoInfo.careerPoints || 'No disponible'}</p>
+                                            <p class="info-item">Podios: ${pilotoInfo.podiums || 'No disponible'}</p>
+                                            <p class="info-item">Campeonatos Mundiales: ${pilotoInfo.wcTitles || 'No disponible'}</p>`;
+                } catch (error) {
+                    console.error("Error al cargar información del piloto desde la API de Fórmula 1: ", error);
+                }
+            };
+
+            cargarDatosAPI(new Date().getFullYear());
+
+            yearSelect.addEventListener("change", () => {
+                const selectedYear = yearSelect.value;
+                cargarDatosAPI(selectedYear);
+                informacionDiv.innerHTML = "";
+            });
+
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year >= 1950; year--) {
+                const option = document.createElement("option");
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+        });
+    </script>
+</body>
+
+</html>
