@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex</title>
+
+    <!-- favicon -->
+    <link rel="icon" href="./img/Pokedex.png">
+
+    <!-- Enlace al archivo CSS externo -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- archivos CSS y JavaScript de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body class="bg-dark text-white">
+    <!-- contenedor principal -->
+    <div class="container">
+        <h1 class="text-center my-4">Pokédex</h1>
+
+        <!-- mostrar lista de Pokémon -->
+        <div class="row" id="listaPokemon"></div>
+
+        <!-- navegación de paginación -->
+        <nav aria-label="Paginación" class="mt-4">
+            <ul class="pagination justify-content-center" id="pagination"></ul>
+        </nav>
+    </div>
+
+    <!-- modal para mostrar los detalles del Pokémon -->
+    <div class="modal fade" id="modalPokemon" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- encabezado del modal -->
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="exampleModalLabel">Detalles del Pokémon</h5>
+                    <!-- botón de cierre del modal -->
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="detallesPokemon">
+                    <!-- información del Pokémon se mostrará aquí -->
+                    <div class="text-center">
+                        <img src="" alt="" id="pokemonImage">
+                    </div>
+                    <div id="pokemonInfo" class="text-center text-dark"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de JavaScript para la funcionalidad -->
+    <script src="script.js"></script>
+</body>
+
+</html>
