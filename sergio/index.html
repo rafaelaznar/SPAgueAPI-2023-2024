@@ -9,7 +9,7 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <style>
-    #contenedor{
+    #contenedor {
         border: 5px solid black;
         border-radius: 5px;
         background-color: aquamarine;
@@ -34,56 +34,63 @@
                 </div>
             </div>
         </div>
-        
     </div>
-    
+
     <h1></h1>
-    
+
     <script>
-        fetch('https://api.jcdecaux.com/vls/v1/stations?contract=Valence&apiKey=3e21e85d14f2284e4169acf3728f3e1ed078176d')
-            .then(response => response.json())
-            .then(estaciones => {
-                estaciones.forEach((estacion, index) => {
-                    const nombreLimpio = estacion.name.replace(/^\d+\s-\s/, '');
+        // Función para cargar los datos de las paradas
+        function cargarParadas() {
+            fetch('https://api.jcdecaux.com/vls/v1/stations?contract=Valence&apiKey=3e21e85d14f2284e4169acf3728f3e1ed078176d')
+                .then(response => response.json())
+                .then(estaciones => {
+                    estaciones.forEach((estacion, index) => {
+                        const nombreLimpio = estacion.name.replace(/^\d+\s-\s/, '');
 
-                    const listItem = document.createElement('li');
-                    const link = document.createElement('a');
-                    link.href = '#';
-                    link.textContent = nombreLimpio;
-                    link.onclick = function () {
-                        seleccion(estacion);
-                        return false;
-                    };
-                    listItem.appendChild(link);
-                    listaTitulos.appendChild(listItem);
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.href = '#';
+                        link.textContent = nombreLimpio;
+                        link.onclick = function () {
+                            consultarParada(estacion.number); // Consultar la parada directamente
+                            return false;
+                        };
+                        listItem.appendChild(link);
+                        listaTitulos.appendChild(listItem);
+                    });
                 });
-            })
-
-        function seleccion(estacion) {
-
-            const title = document.getElementById("name");
-            const body = document.getElementById("status");
-            title.innerHTML = estacion.name.replace(/^\d+\s-\s/, '');
-            body.innerHTML = "Estado: " + estacion.status;
-
-
-            const listaComentarios = document.getElementById("listaComentarios");
-            listaComentarios.innerHTML = "";
-
-            const latitud = document.createElement('li');
-            latitud.textContent = "Latitud: " + estacion.position.lat + ", Longitud: " + estacion.position.lng;
-
-
-            const stands = document.createElement('li');
-            stands.textContent = "Stands totales: " + estacion.bike_stands;
-
-            const bicicletas = document.createElement('li');
-            bicicletas.textContent = "Bicicletas disponibles: " + estacion.available_bikes + ", Bicicletas ocupadas: " + (estacion.bike_stands - estacion.available_bikes);
-
-            listaComentarios.appendChild(latitud);
-            listaComentarios.appendChild(stands);
-            listaComentarios.appendChild(bicicletas);
         }
+
+        // Función para consultar los detalles de una parada específica
+        function consultarParada(paradaNumber) {
+            fetch(`https://api.jcdecaux.com/vls/v1/stations/${paradaNumber}?contract=Valence&apiKey=3e21e85d14f2284e4169acf3728f3e1ed078176d`)
+                .then(response => response.json())
+                .then(data => {
+                    const title = document.getElementById("name");
+                    const body = document.getElementById("status");
+                    title.innerHTML = data.name.replace(/^\d+\s-\s/, '');
+                    body.innerHTML = "Estado: " + data.status;
+
+                    const listaComentarios = document.getElementById("listaComentarios");
+                    listaComentarios.innerHTML = "";
+
+                    const latitud = document.createElement('li');
+                    latitud.textContent = "Latitud: " + data.position.lat + ", Longitud: " + data.position.lng;
+
+                    const stands = document.createElement('li');
+                    stands.textContent = "Stands totales: " + data.bike_stands;
+
+                    const bicicletas = document.createElement('li');
+                    bicicletas.textContent = "Bicicletas disponibles: " + data.available_bikes + ", Bicicletas ocupadas: " + (data.bike_stands - data.available_bikes);
+
+                    listaComentarios.appendChild(latitud);
+                    listaComentarios.appendChild(stands);
+                    listaComentarios.appendChild(bicicletas);
+                });
+        }
+
+        // Cargar las paradas al cargar la página
+        cargarParadas();
     </script>
 </body>
 <style>
