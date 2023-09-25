@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PokeAPI</title>
+    <!-- Agrega el enlace a la hoja de estilo de Bootstrap -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="icon" href="img/PokВ_Ball_icon.svg.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Estilo para ocultar la tarjeta inicialmente */
+        #pokemonCard {
+            display: none;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Roboto', Arial, sans-serif;
+            /* Usar la fuente Roboto */
+        }
+
+        /* Estilo para el contenedor principal */
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Estilo para el título principal */
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Estilo para la etiqueta del campo de entrada */
+        label {
+            font-weight: bold;
+        }
+
+        /* Estilo para el campo de entrada de texto */
+        .form-control {
+            border: 2px solid #007bff;
+            border-radius: 4px;
+        }
+
+        /* Estilo para el botón de búsqueda */
+        #buscarBtn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Estilo para la tarjeta del Pokémon */
+        .card {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo para el título de la tarjeta */
+        .card-title {
+            color: #333;
+            text-align: center;
+        }
+
+        /* Estilo para la imagen del Pokémon */
+        .card-img-top {
+            max-width: 200px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* Estilo para el texto dentro de la tarjeta */
+        .card-text {
+            color: #555;
+            text-align: center;
+        }
+
+        /* Estilo para el mensaje de error */
+        #error-message {
+            color: #f00;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pokemonCard = document.getElementById('pokemonCard');
+            const pokemonInput = document.getElementById('pokemonInput');
+            const pokemonName = document.getElementById('pokemonName');
+            const pokemonImage = document.getElementById('pokemonImage');
+            const pokemonHeight = document.getElementById('pokemonHeight');
+            const pokemonWeight = document.getElementById('pokemonWeight');
+            const errorMessage = document.getElementById('error-message');
+
+            document.getElementById('buscarBtn').addEventListener('click', () => {
+                const inputValue = pokemonInput.value.toLowerCase();
+                const apiUrl = `https://pokeapi.co/api/v2/pokemon/${inputValue}/`;
+
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('No se encontró información para ese Pokémon.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        errorMessage.textContent = ''; // Limpiar mensaje de error
+                        pokemonName.textContent = data.name.toUpperCase();
+                        pokemonImage.src = data.sprites.front_default;
+                        pokemonHeight.textContent = `Altura: ${data.height} dm`;
+                        pokemonWeight.textContent = `Peso: ${data.weight} hectogramos`;
+
+                        // Mostrar la tarjeta después de realizar la búsqueda
+                        pokemonCard.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        errorMessage.textContent = error.message;
+                        // Ocultar el card del Pokémon en caso de error
+                        pokemonCard.style.display = 'none';
+                    });
+            });
+
+            pokemonInput.addEventListener('input', () => {
+                // Verificar si el campo está vacío
+                if (pokemonInput.value.trim() === '') {
+                    // Si está vacío, ocultar el card del Pokémon y limpiar el mensaje de error
+                    pokemonCard.style.display = 'none';
+                    errorMessage.textContent = '';
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1>Información de Pokémon</h1>
+        <div class="form-group">
+            <label for="pokemonInput">Número o nombre del Pokémon:</label>
+            <input type="text" class="form-control" id="pokemonInput">
+        </div>
+        <button class="btn btn-primary" id="buscarBtn">Buscar</button>
+
+        <!-- Tarjeta para mostrar la información del Pokémon -->
+        <div id="pokemonCard" class="mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title" id="pokemonName"></h2>
+                    <img src="" alt="" class="card-img-top" id="pokemonImage">
+                    <p class="card-text" id="pokemonHeight"></p>
+                    <p class="card-text" id="pokemonWeight"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje de error -->
+        <div id="error-message"></div>
+    </div>
+
+
+</body>
+
+</html>
