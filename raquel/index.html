@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recetas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .pointer {
+            cursor: pointer;
+        }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.02);
+        }
+        .card-title {
+            font-size: 1.2rem;
+        }
+        .ingredientes {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .nav-link:hover {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Food Categories</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto" id="categoriasNavbar"></ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <div class="mt-3">
+            <h2>Meals from this category:</h2>
+            <div id="comidas" class="row"></div>
+        </div>
+    </div>
+
+    <script>
+        const categoriasNavbar = document.getElementById("categoriasNavbar");
+        const contenedorComidas = document.getElementById("comidas");
+
+        // Función para mostrar/ocultar los ingredientes
+        function toggleIngredientes(ingredientesElement) {
+            if (ingredientesElement.style.display === "none") {
+                ingredientesElement.style.display = "block";
+            } else {
+                ingredientesElement.style.display = "none";
+            }
+        }
+
+        // Función para mostrar los ingredientes de una comida dentro del card correspondiente
+        function mostrarIngredientes(idMeal, ingredientesElement) {
+            // Obtener los ingredientes de la comida
+            fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`)
+                .then(response => response.json())
+                .then(data => {
+                    const meal = data.meals[0];
+                    if (meal) {
+                        const ingredientes = [];
+                        // Recorre los ingredientes (hasta un máximo de 20) y sus medidas
+                        for (let i = 1; i <= 20; i++) {
+                            const ingrediente = meal[`strIngredient${i}`];
+                            const medida = meal[`strMeasure${i}`];
+                            // Si no hay más ingredientes, sal del bucle
+                            if (!ingrediente) break;
+                            ingredientes.push(`${medida} ${ingrediente}`);
+                        }
+
+                        // Mostrar los ingredientes dentro del elemento correspondiente
+                        ingredientesElement.innerHTML = `
+                            <h4>Ingredients:</h4>
+                            <ul>
+                                ${ingredientes.map(ingrediente => `<li>${ingrediente}</li>`).join("")}
+                            </ul>
+                        `;
+                    } else {
+                        console.error('No se encontraron ingredientes para la comida seleccionada.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Hubo un error al obtener los ingredientes:', error);
+                });
+        }
+
+        // Función para cargar las categorías de comidas y mostrar la primera por defecto
+        function cargarCategoriasYMostrarPrimera() {
+            fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
+                .then(response => response.json())
+                .then(data => {
+                    data.categories.forEach((categoria, index) => {
+                        // Crear un elemento de lista para cada categoría en el navbar
+                        let listItem = document.createElement("li");
+                        listItem.classList.add("nav-item");
+                        
+                        let link = document.createElement("a");
+                        link.classList.add("nav-link");
+                        link.textContent = categoria.strCategory;
+                        link.href = "#"; // Hacer que el enlace sea clickeable
+                        link.addEventListener("click", () => {
+                            // Al hacer clic en una categoría, mostrar las comidas de esa categoría
+                            mostrarComidasPorCategoria(categoria.strCategory);
+                        });
+                        
+                        listItem.appendChild(link);
+                        categoriasNavbar.appendChild(listItem);
+                    });
+
+                    if (data.categories.length > 0) {
+                        const primeraCategoria = data.categories[0].strCategory;
+                        mostrarComidasPorCategoria(primeraCategoria);
+                    }
+                })
+                .catch(error => {
+                    console.error('Hubo un error al obtener las categorías de comidas:', error);
+                });
+        }
+
+        // Llamar a la función al cargar la página
+        window.addEventListener('load', cargarCategoriasYMostrarPrimera);
+
+        // Función para mostrar las comidas de una categoría con componentes card, fotos e ingredientes
+        function mostrarComidasPorCategoria(categoria) {
+            // Limpiar el contenido anterior
+            contenedorComidas.innerHTML = "";
+
+            // Cargar las comidas de la categoría seleccionada
+            fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${categoria}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.meals) {
+                        data.meals.forEach(comida => {
+                            // Crear un componente card para cada comida con una imagen
+                            let card = document.createElement("div");
+                            card.classList.add("col-md-4", "mb-4", "pointer", "shadow"); // Agregamos la clase "pointer" y "shadow"
+
+                            let cardInner = document.createElement("div");
+                            cardInner.classList.add("card");
+
+                            // Agregar la imagen de la comida
+                            let img = document.createElement("img");
+                            img.classList.add("card-img-top");
+                            img.src = comida.strMealThumb;
+                            img.alt = comida.strMeal;
+
+                            let cardBody = document.createElement("div");
+                            cardBody.classList.add("card-body");
+
+                            let cardTitle = document.createElement("h5");
+                            cardTitle.classList.add("card-title");
+                            cardTitle.textContent = comida.strMeal;
+
+                            // Agregar elemento para mostrar los ingredientes
+                            let ingredientesElement = document.createElement("div");
+                            ingredientesElement.classList.add("ingredientes");
+                            ingredientesElement.style.display = "none"; // Inicialmente oculto
+                            cardBody.appendChild(ingredientesElement);
+
+                            // Agregar evento de clic para mostrar/ocultar los ingredientes
+                            card.addEventListener("click", () => {
+                                toggleIngredientes(ingredientesElement);
+                                // Mostrar los ingredientes de la comida
+                                mostrarIngredientes(comida.idMeal, ingredientesElement);
+                            });
+
+                            cardBody.appendChild(cardTitle);
+                            cardInner.appendChild(img);
+                            cardInner.appendChild(cardBody);
+                            card.appendChild(cardInner);
+
+                            contenedorComidas.appendChild(card);
+                        });
+                    } else {
+                        contenedorComidas.textContent = "No se encontraron comidas en esta categoría.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Hubo un error al obtener las comidas de la categoría:', error);
+                });
+        }
+    </script>
+    <!-- Scripts de Bootstrap (jQuery y Popper.js) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+JfAq5lJw4Ze4q5z5FfG+3d6s5FBE9eRf5tzo5Bd5p6aW6f5" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-oNpJVZmx6I5t6z5zF5R5O5z5F5F5I5E5E5e5S5e5r5T5l5V5Z5M5j5F5E5E5F5S5e5t5T5v5Z5M5e5S5f5S5u5C5n5T5F5e5E5E5E5e5C5i5a5N5" crossorigin="anonymous"></script>
+</body>
+</html>
