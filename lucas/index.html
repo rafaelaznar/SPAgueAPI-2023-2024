@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personajes de Rick y Morty</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="icon" href="./img/icono.png" type="image/x-icon">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Personajes de Rick y Morty</h1>
+        <p id="hora-actual" class="text-center">Hora actual: Cargando...</p>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row row-cols-1 row-cols-md-4 g-4" id="contenedor-personajes"></div>
+        <nav aria-label="Navegación de páginas">
+            <ul class="pagination justify-content-center" id="paginacion"></ul>
+        </nav>
+    </div>
+
+    <footer class="bg-dark py-3">
+        <div class="container text-center">
+            <div class="col">
+                <img src="./img/Rick-And-Morty-Logo.png" alt="logo" class="img-fluid">
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de ubicación -->
+    <div class="modal fade" id="ubicacionModal" tabindex="-1" role="dialog" aria-labelledby="ubicacionModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ubicacionModalLabel">Ubicación</h5>
+                    <button type="button" class="close" id="cerrarModal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Nombre: <span id="ubicacionNombre"></span></p>
+                    <p>Tipo: <span id="ubicacionTipo"></span></p>
+                    <p>Dimensión: <span id="ubicacionDimension"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/hora.js"></script>
+    <script src="./js/personajes.js"></script>
+</body>
+
+</html>
