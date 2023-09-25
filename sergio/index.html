@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<style>
+    #contenedor {
+        border: 5px solid black;
+        border-radius: 5px;
+        background-color: aquamarine;
+    }
+
+</style>
+<body>
+    <div>
+        <h1 class="h1 text-center mt-5">Disponibilidad de Bicicletas Valenbisi</h1>
+        <div id="contenedor" class="container mt-5">
+            <div class="d-flex">
+                <div class="scrollable-list col-md-2">
+                    <h2 class="h1 ms-2 me-5">Paradas</h2>
+                    <ul id="listaTitulos">
+                    </ul>
+                </div>
+                <div class="col-md-6 ms-3 mt-3">
+                    <h4 id="name"></h4>
+                    <p id="status"></p>
+                    <ul id="listaComentarios">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h1></h1>
+
+    <script>
+        // Función para cargar los datos de las paradas
+        function cargarParadas() {
+            fetch('https://api.jcdecaux.com/vls/v1/stations?contract=Valence&apiKey=3e21e85d14f2284e4169acf3728f3e1ed078176d')
+                .then(response => response.json())
+                .then(estaciones => {
+                    estaciones.forEach((estacion, index) => {
+                        const nombreLimpio = estacion.name.replace(/^\d+\s-\s/, '');
+
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.href = '#';
+                        link.textContent = nombreLimpio;
+                        link.onclick = function () {
+                            consultarParada(estacion.number); // Consultar la parada directamente
+                            return false;
+                        };
+                        listItem.appendChild(link);
+                        listaTitulos.appendChild(listItem);
+                    });
+                });
+        }
+
+        // Función para consultar los detalles de una parada específica
+        function consultarParada(paradaNumber) {
+            fetch(`https://api.jcdecaux.com/vls/v1/stations/${paradaNumber}?contract=Valence&apiKey=3e21e85d14f2284e4169acf3728f3e1ed078176d`)
+                .then(response => response.json())
+                .then(data => {
+                    const title = document.getElementById("name");
+                    const body = document.getElementById("status");
+                    title.innerHTML = data.name.replace(/^\d+\s-\s/, '');
+                    body.innerHTML = "Estado: " + data.status;
+
+                    const listaComentarios = document.getElementById("listaComentarios");
+                    listaComentarios.innerHTML = "";
+
+                    const latitud = document.createElement('li');
+                    latitud.textContent = "Latitud: " + data.position.lat + ", Longitud: " + data.position.lng;
+
+                    const stands = document.createElement('li');
+                    stands.textContent = "Stands totales: " + data.bike_stands;
+
+                    const bicicletas = document.createElement('li');
+                    bicicletas.textContent = "Bicicletas disponibles: " + data.available_bikes + ", Bicicletas ocupadas: " + (data.bike_stands - data.available_bikes);
+
+                    listaComentarios.appendChild(latitud);
+                    listaComentarios.appendChild(stands);
+                    listaComentarios.appendChild(bicicletas);
+                });
+        }
+
+        // Cargar las paradas al cargar la página
+        cargarParadas();
+    </script>
+</body>
+<style>
+    .scrollable-list {
+        max-height: 300px;
+        width: auto;
+        overflow-y: scroll;
+    }
+</style>
+
+</html>
