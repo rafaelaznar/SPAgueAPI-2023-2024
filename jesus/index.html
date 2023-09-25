@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>iRule</title>
+    <link rel="icon" href="assets/icons/favicon.png" type="image/x-icon">
+    <link href="https://fonts.cdnfonts.com/css/triforce" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/styles.css">
+    <!-- Boostrap 5-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <script src="./js/main.js"></script>
+</head>
+
+<body class=" overflow-hidden">
+    <div class="body-background">
+        <div class="body-frame p-3">
+
+            <nav class="navbar brown-texture fixed-top navbar-expand-xxl fs-1">
+                <div class="container-fluid justify-content-sm-start justify-content-around">
+                    <button class="navbar-toggler navbar-toggler-gold" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <a class="navbar-brand text-gold m-2 fs-1" href="#">iRule</a>
+                    <div class="collapse navbar-collapse justify-content-around" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <button class="nav-link p-0  m-2" id="equipment-button"><img class="mb-2"
+                                    src="./assets/icons/navbar_icons/Equipment.png"><span
+                                    class="text-gold ms-3 ">Equipment</span></button>
+                            <button class="nav-link p-0  m-2" id="monster-button"><img class="mb-2"
+                                    src="./assets/icons/navbar_icons/Monsters.png"><span
+                                    class="ms-3 text-gold">Monsters</span></button>
+                            <button class="nav-link p-0  m-2" id="material-button"><img class="mb-2"
+                                    src="./assets/icons/navbar_icons/Materials.png"><span
+                                    class="text-gold ms-3">Materials</span></button>
+                            <button class="nav-link p-0  m-2" id="creature-button"><img class="mb-2"
+                                    src="./assets/icons/navbar_icons/Creatures.png"><span
+                                    class="text-gold ms-3">Creatures</span></button>
+                        </div>
+                    </div>
+
+
+            </nav>
+
+            <main class="m-5 p-5 row cardItem" id="data-main">
+
+            </main>
+
+
+            <!--MODAL-->
+            <div id="modalContainer ">
+                <div class="modal fade " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog ">
+                        <div class="modal-content   white-texture text-gold">
+                            <div class="modal-header brown-texture">
+                                <h1 class="modal-title fs-5 modal-title " id="exampleModalLabel"></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="d-flex justify-content-center "><img class="modal-img w-50" src=""></div>
+                            <div class="modal-body brown-texture">
+
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <button type="button" class="btn btn-secondary w-100 bg-gold"
+                                    data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MENU PRINCIPAL -->
+            <!-- /*Formulario de entrada*/ -->
+            <!-- Paginación al fondo de la página -->
+            <div class=" d-flex justify-content-center">
+                <div class="position-absolute bottom-0 ">
+                    <nav class="collapse" id="navPagination">
+                        <ul class="pagination pagination-lg ">
+                            <li class="page-item text-center ">
+                                <a class="page-link text-gold brown-texture " href="#" id="previous-button"
+                                    style="width: 150px;">
+                                    <span aria-hidden="true" class="mr-2">&laquo;</span> Previous
+                                </a>
+                            </li>
+                            <li class="page-item text-center">
+                                <a class="page-link text-gold brown-texture" href="#" id="next-button"
+                                    style="width: 150px;">
+                                    Next <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

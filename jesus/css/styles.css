@@ -1,0 +1,64 @@
+body{
+    font-family: 'Triforce', sans-serif !important; 
+    height: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.body-background {
+    background-image: url('../img/body_background.jpg');
+    background-size: cover;
+    background-position: center center; 
+    height: 100vh;
+}
+
+.body-frame {
+    background-image: url('../img/body_frame.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: auto;
+  }
+
+.blur {
+    background: rgba(0, 0, 0, 0.1);  
+    backdrop-filter: blur(1px);
+}
+
+.text-gold {
+   color: #DDA417 !important;
+}
+
+.bg-gold{
+    background-color: #0e5135 !important;
+}
+
+
+
+.navbar-toggler-gold {
+    color: #1b00b3 !important;
+    background-color:  #DDA417 !important;
+}
+
+.brown-texture{
+    background-image: url(../img/brown_texture.jpeg) !important;
+    background-size: cover;
+    background-position: center center; 
+    background-repeat: no-repeat; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 100%) !important;
+
+}
+
+.white-texture{
+    background-image: url(../img/white_texture.jpg) !important;
+    background-size: cover;
+    background-position: center center; 
+    background-repeat: no-repeat;
+
+}
+@media (max-width: 1236px) {
+    .navbar_icon {
+        display: none;
+    }
+}
