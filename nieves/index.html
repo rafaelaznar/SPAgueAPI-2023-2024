@@ -1,0 +1,423 @@
+<!--Nieves Navas Aguilar-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://static-00.iconduck.com/assets.00/open-book-icon-2048x2048-wuklhx59.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <title>DnD</title>
+    <style>
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+
+        }
+
+        body {
+            background-color: #6d36998a;
+        }
+
+        span {
+            display: inline-block;
+            background-color: #60536b38;
+        }
+
+        .bg-magic {
+            background-color: #501588;
+            color: white;
+        }
+
+        .bg-items {
+            background-color: #8559af;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!--Titulo-->
+    <div class=""><span class="row p-3 text-center rounded-3 text-light">
+            <div class="col"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Purple_d20.png"
+                    style="width: 100px;" alt=""></div>
+            <div class="col display-4 text-light">
+                <p>Dungeons &</p>
+                <p>Dragons</p>
+            </div>
+            <div class="col"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Purple_d20.png"
+                    style="width: 100px;" alt=""></div>
+        </span>
+    </div>
+    <!--Descripcion-->
+    <div class="row p-2 text-center">
+        <div class="col"><span class="m-2 p-3 rounded-3 text-light">Dungeons & Dragons (D&D), often abbreviated as DnD,
+                is a popular
+                tabletop role-playing
+                game
+                (RPG) where players embark on adventures in a fantasy world. In D&D, participants create unique
+                characters
+                with various abilities, attributes, and backgrounds, and they navigate a richly detailed imaginary
+                realm
+                filled with quests, monsters, and magic. The game is guided by a Dungeon Master (DM) who serves as
+                the
+                storyteller and referee, shaping the narrative based on players' choices and the outcomes of dice
+                rolls. D&D
+                offers a dynamic and collaborative storytelling experience, emphasizing creativity,
+                problem-solving, and
+                cooperative play among its participants.</span></div>
+
+        <!--Formulario-->
+        <div class="col m-2">
+            <form>
+                <div class="mb-3 mt-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="name" class="form-control" id="name" placeholder="Enter your name" name="name"
+                        required>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="favorite-name" class="form-label">Favourite puppy name:</label>
+                    <input type="name" class="form-control" id="favorite-name"
+                        placeholder="Write your favourite name for a puppy" name="name" required>
+                </div>
+                <button type="button" id="submit" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#myModal" disabled>Submit</button>
+
+            </form>
+        </div>
+    </div>
+    <!--Modal-->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">It's dangerous to go outside</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body" id="modal">
+                    <div class="modal-body" id="modal">
+                        <p>There are lots of evil dragons over there, so...</p>
+                        <p id="user-text"></p>
+                        <img id="dog-img" class="img-fluid" src="" alt="Random Dog">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row p-3">
+        <div class="col-4">
+            <!-- Offcanvas Sidebar -->
+            <div class="offcanvas offcanvas-start" id="demo">
+                <div class="offcanvas-header">
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div id="loader" class="loader"></div>
+                    <!--Donde se crea la tabla-->
+                    <div id="lista-div"></div> 
+                </div>
+            </div>
+
+            <!-- Buttongroup para abrir sidebar -->
+            <div class="span-4 text-center">
+                <div class="btn-group-vertical">
+                    <button type="button" class="btn bg-magic" title="Informative list" data-bs-toggle="popover"
+                        data-bs-trigger="focus"
+                        data-bs-content="Click on each of the items below to view a list of the content for each one!"
+                        id="popup">List</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="alignments">Alignments</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="classes">Clases</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="conditions">Conditions</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="damage-types">Damage types</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="languages">Languages</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="races">Races</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="rule-sections">Rule sections</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="rules">Rules</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="skills">Skills</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="subclasses">Subclases</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="subraces">Subraces</button>
+
+                    <button type="button" class="btn bg-items" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                        id="weapon-properties">Weapon Properties</button>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!--Info e imágenes-->
+        <div class="col-4">
+
+            <div class="col"><span class="m-2 p-3 rounded-3 text-light">Are you ready to dive into the enchanting realm
+                    of Dungeons & Dragons? We extend a warm invitation to you and your friends to partake in this
+                    immersive fantasy gaming experience. Prepare yourselves for a journey filled with epic quests,
+                    formidable foes, and the opportunity to confront the very essence of evil. Step into a world where
+                    your imagination knows no bounds, where storytelling reaches new heights, and where unforgettable
+                    adventures await your every decision. Join us and become the hero of your own legendary tale!</span>
+            </div>
+            <span class="m-2 p-3 rounded-3 text-light"> <img
+                    src="https://www.wargamer.com/wp-content/sites/wargamer/2023/05/dnd-character-sheets-r-n-w-journal.jpg"
+                    style="width: 100%;" alt="">
+                Character sheet example</span>
+            <div class="col"><span class="m-2 p-3 rounded-3 text-light">Feel free to explore this page to learn more:
+                    <a href="https://dnd.wizards.com/es">Dungeons & Dragons - Wizards of the Coast</a> . It's a treasure
+                    trove of information about the world of
+                    D&D, including rules, lore, and much more to enhance your gaming experience.</span>
+            </div>
+
+        </div>
+
+    <!--Donde se crea la tabla-->
+        <div class="col-4">
+        
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Full name</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-tbody"></tbody>
+            </table>
+
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-8 text-light">
+            <p>Nieves Navas Aguilar</p>
+            <p>2º DAW</p>
+        </div>
+        <div class="col"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Purple_d20.png"
+                style="width: 50px;" alt=""></div>
+        </span>
+    </div>
+
+    <script>
+        // Mostrar el indicador de carga
+        function showLoader() {
+            let loader = document.getElementById("loader");
+            loader.style.display = "block";
+        }
+
+        // Ocultar el indicador de carga
+        function hideLoader() {
+            let loader = document.getElementById("loader");
+            loader.style.display = "none";
+        }
+
+        const nameInput = document.getElementById('name');
+        const favoriteNameInput = document.getElementById('favorite-name');
+        const submitButton = document.getElementById('submit');
+
+
+        // Función para verificar si ambos campos están completos y habilitar o deshabilitar el botón en consecuencia
+        function toggleSubmitButton() {
+            const userName = nameInput.value.trim();
+            const favoriteName = favoriteNameInput.value.trim();
+            if (userName !== '' && favoriteName !== '') {
+                // Habilitar el botón si ambos campos están completos
+                submitButton.disabled = false; 
+            } else {
+                // Deshabilitar el botón si uno o ambos campos están vacíos
+                submitButton.disabled = true; 
+            }
+        }
+
+
+        // Agregar un evento de entrada a los campos de entrada para verificar continuamente su estado
+        nameInput.addEventListener('input', toggleSubmitButton);
+        favoriteNameInput.addEventListener('input', toggleSubmitButton);
+
+        let dogImage = document.getElementById('dog-img');
+        let dogButton = document.getElementById('submit');
+        let userTextParagraph = document.getElementById('user-text');
+        dogButton.addEventListener('click', function () {
+            // Obtener el valor de los inputs
+            let nameInput = document.getElementById('name');
+            let favoriteNameInput = document.getElementById('favorite-name');
+            let userName = nameInput.value;
+            let favoriteName = favoriteNameInput.value;
+
+            // Crear el texto que quieres mostrar
+            let userText = userName + ", take " + favoriteName + " with you!";
+
+            // Mostrar el texto en el párrafo
+            userTextParagraph.textContent = userText;
+
+            // Restaurar los valores de los inputs
+            nameInput.value = '';
+            favoriteNameInput.value = '';
+
+            // Inhabilitar el botón "Submit" nuevamente
+            submitButton.disabled = true;
+        });
+
+        // Función para obtener una imagen aleatoria de un perrito
+        function getRandomDogImage() {
+            fetch("https://dog.ceo/api/breeds/image/random")
+                .then(response => response.json())
+                .then(data => {
+                    const dogImage = document.getElementById('dog-img');
+                    dogImage.src = data.message; // Actualiza la fuente de la imagen
+                })
+                .catch(error => {
+                    console.error("Error al obtener la imagen del perrito:", error);
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            //Contenido popover
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl)
+            });
+
+
+            // Realiza la solicitud fetch
+            fetch('https://www.dnd5eapi.co/api/ability-scores/')
+                .then(response => response.json())
+                .then(posts => {
+                    // Selecciona la tabla 
+                    let listaTbody = document.getElementById("lista-tbody");
+
+                    // For each para rellenar la tabla
+                    posts.results.forEach(post => {
+                        let row = document.createElement('tr');
+                        let name = document.createElement('th');
+                        name.textContent = post.name;
+                        row.appendChild(name);
+
+                     // Realiza la solicitud fetch
+                        fetch(`https://www.dnd5eapi.co/api/ability-scores/${post.index}`)
+                            .then(response => response.json())
+                            .then(details => {
+                                let full_name = details.full_name || 'N/A';
+                                let desc = details.desc || 'N/A';
+                                let fullNameCell = document.createElement('td');
+                                fullNameCell.textContent = full_name;
+
+                                let descCell = document.createElement('td');
+                                // Unir las descripciones en un solo párrafo
+                                descCell.textContent = desc.join('\n'); 
+
+                                // Agrega las celdas al row
+                                row.appendChild(fullNameCell);
+                                row.appendChild(descCell);
+
+                                // Agrega la fila completa a la tabla
+                                listaTbody.appendChild(row);
+                            })
+                            .catch(error => {
+                                console.error('Error al obtener los detalles de la habilidad:', error);
+                            });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al obtener los datos de la API:', error);
+                });
+
+
+            const dogButton = document.getElementById('submit');
+
+            // Evento click al botón para obtener una imagen de un perrito
+            dogButton.addEventListener("click", getRandomDogImage);
+
+            // Agregar un evento de escucha a los botones de temas
+            const buttons = document.querySelectorAll('[data-bs-toggle="offcanvas"]');
+            buttons.forEach(button => {
+                button.addEventListener("click", function () {
+                    // Se recoge la lista
+                    let lista = document.getElementById('lista-div');
+                    lista.innerHTML = ''; 
+
+                    showLoader();
+                    const temaID = this.id;
+                    const apiUrl = `https://www.dnd5eapi.co/api/${this.id}`;
+
+                    fetch(apiUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Limpiar la lista antes de agregar nuevos elementos
+                            lista.innerHTML = ''; 
+
+                            // Verificar si se encontraron datos
+                            if (data.results && data.results.length > 0) {
+                                // For each para mostrar los datos
+                                data.results.forEach(clase => {
+                                    let name = document.createElement('h4');
+                                    name.textContent = clase.name;
+                                    lista.appendChild(name);
+                                });
+                            } else {
+                                let mensaje = document.createElement('p');
+                                mensaje.textContent = "No se encontraron clases.";
+                                lista.appendChild(mensaje);
+                            }
+
+                            hideLoader(); 
+                        })
+                        .catch(error => {
+                            console.error("Error al obtener los datos:", error);
+                            hideLoader();
+                        });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
